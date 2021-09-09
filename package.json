@@ -1,0 +1,37 @@
+{
+    "name": "demodemo",
+    "version": "1.0.0",
+    "description": "this is a demo a.",
+    "scripts": {
+        "build": "vite build",
+        "watch": "vite build --watch"
+    },
+    "dependencies": {
+        "vue": "^3.0.5",
+        "vue-router": "^4.0.8",
+        "vuex": "^4.0.1"
+    },
+    "devDependencies": {
+        "cosmiconfig": "^7.0.0",
+        "fs-extra": "^10.0.0",
+        "lodash.difference": "^4.5.0",
+        "lodash.get": "^4.4.2",
+        "lodash.memoize": "^4.1.2",
+        "lodash.set": "^4.3.2",
+        "@rollup/plugin-commonjs": "^19.0.0",
+        "node-scp": "^0.0.15",
+        "@types/chrome": "^0.0.145",
+        "@vitejs/plugin-vue": "^1.2.3",
+        "@vue/compiler-sfc": "^3.0.5",
+        "babel-eslint": "^10.1.0",
+        "element-plus": "^1.0.2-beta.55",
+        "eslint": "^7.28.0",
+        "eslint-plugin-html": "^6.1.2",
+        "eslint-plugin-prettier": "^3.4.0",
+        "eslint-plugin-vue": "^7.11.0",
+        "prettier": "^2.3.1",
+        "vite": "^2.3.7",
+        "vite-plugin-style-import": "^1.0.1",
+        "vite-plugin-vue-crx3": "^1.0.5"
+    }
+}

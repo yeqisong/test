@@ -1,0 +1,14 @@
+{
+    "appTitle": {
+        "message": "demodemo",
+        "description": "The title of this chrome extension."
+    },
+    "appDescription": {
+        "message": "this is a demo a.",
+        "description": "the description of this chrome extension."
+    },
+    "actionTitle": {
+        "message": "demodemo",
+        "description": "the title of this chrome extension showed in the navigtion."
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "appTitle": {
+        "message": "demodemo",
+        "description": "拓展的标题"
+    },
+    "appDescription": {
+        "message": "this is a demo a.",
+        "description": "用来学习"
+    },
+    "actionTitle": {
+        "message": "demodemo",
+        "description": "拓展浏览器图标显示的标题"
+    }
+}
