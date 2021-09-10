@@ -2,7 +2,6 @@ import { entryDef } from '../entry'
 import { relative } from 'path'
 import { findChunkByName, removeFileExtension, slash1 } from '../util/functions'
 import { mixinChunksForIIFE } from './mixin'
-import diff from 'lodash.difference'
 export class ContentScriptProcessor {
     contentJs=[]
     /**
@@ -47,10 +46,8 @@ export class ContentScriptProcessor {
      */
     async generateBundle (plugin, bundle, manifest) {
         // 打包为iife
-        // 处理content
         if (this.contentJs.length) {
             const distDirs = entryDef.content.dist
-            console.log('=====content.js/generateBundle:', distDirs, entryDef)
             for (const distDir of distDirs) {
                 let chunk = findChunkByName(distDir, bundle)
                 if (chunk) {
@@ -58,7 +55,6 @@ export class ContentScriptProcessor {
                 }
             }
         }
-        // 处理web_access_res（排除background和content）
     }
     async generateBundleFromDynamicImports (plugin, bundle, dyimports) {
         // 打包为iife

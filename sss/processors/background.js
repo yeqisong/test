@@ -69,7 +69,6 @@ export class BackgroundProcessor {
         // 动态导入的js文件
         const dynamicImports = []
         const idfile = parse(id)
-        // console.log('==============id,code:', id, code)
         let updatedCode = code.replace(dynamicImportScriptRex,
             match => match.replace(/(?<=(files\s*:\s*\[)?[\"\'])[\s\S]*?(?=\]?[\"\'])/gm, fileStr => {
                 fileStr = fileStr.replace(/[\"\']/g, '').trim()

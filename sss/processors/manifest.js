@@ -7,6 +7,7 @@ import { cloneObject } from '../util/functions'
 import { BackgroundProcessor } from './background'
 import { ContentScriptProcessor } from './content'
 import { PermissionProcessor } from './permission'
+import { WebresProcessor } from './webres'
 import { deriveFiles } from '../manifest/parse'
 import { input2kuFunction } from '../manifest/input2kvfun'
 import { getAssets, getChunk } from '../util/bundle'
@@ -15,7 +16,6 @@ import { validateManifest } from '../manifest/validate'
 import { HtmlProcessor } from './html'
 import { canDo } from '../util/dir'
 import { uniqueId } from 'lodash'
-import { WebresProcessor } from './webres'
 // 同步读取manifest配置文件
 export const explorerSync = cosmiconfigSync('manifest', {
     cache: false
@@ -36,7 +36,6 @@ export class ManifestProcessor {
         // option.input.manifest路径(对象形式)删除manifest路径后剩余的配置
         inputObj                   : {},
         dynamicImportContentScripts: [],
-        injectScripts              : [],
         // dynamicImportContentCss    : [],
         permsHash                  : '',
         permissions                : [],
@@ -128,11 +127,10 @@ export class ManifestProcessor {
     }
     /**
      * 解析资源，处理路径不存在的资源
-     * @param {*} source
-     * @returns
+     * @param {*} source 
+     * @returns 
      */
-    resolveId (source, importer) {
-        // console.log('----------------resolveId:', source, importer)
+    resolveId (source) {
         if (!canDo(source)) {
             let uuid = uniqueId()
             this.cache.notfilea.push(`filenotfound${uuid}`)
@@ -143,13 +141,12 @@ export class ManifestProcessor {
     }
     /**
      * 处理路径不存在的资源
-     * @param {*} id
-     * @returns
+     * @param {*} id 
+     * @returns 
      */
     loadSource (id) {
-        if (this.cache.notfilea.indexOf(id) > -1) {
-            console.error('\n', chalk.yellow('[vite-plugin-vue-crx3 error] file not found：'), chalk.red(`${id}-----${this.cache.notfiles[id]}`))
-            // return 'console.log("file not found!")'
+        if (this.cache.notfilea.indexOf(id)>-1) {
+            console.error('\n', chalk.yellow('[vite-plugin-vue-crx3 error] file not found：'), chalk.red(`${this.cache.notfiles[id]}`))
             throw new Error(`${this.cache.notfiles[id]} : file not found!`)
         } else {
             return null
@@ -170,7 +167,6 @@ export class ManifestProcessor {
             this.manifest,
             this.options.srcDir
         )
-        console.log('====resolveinput:', js)
         // 入口静态资源，包含js、html文件，合并用户自定义input（数组类型）
         this.cache.input = [...this.cache.inputAry, ...js, ...html]
         // assets类资源
@@ -181,7 +177,6 @@ export class ManifestProcessor {
         //      'libs/popup': '/Users/yeqisong/Desktop/项目/chorme开发/pmwl/src/libs/popup.html',
         //      'libs/newtab': '/Users/yeqisong/Desktop/项目/chorme开发/pmwl/src/libs/newtab.html'
         // }
-        console.log('===this.options.srcDir:', this.options.srcDir, this.cache.inputObj)
         const inputs = this.cache.input.reduce(input2kuFunction(this.options.srcDir), this.cache.inputObj)
         // 修正核心入口文件位置(background)
         // {
@@ -203,10 +198,8 @@ export class ManifestProcessor {
         this.cache.html = html
         // 修正核心入口文件位置（html)
         this.htmlProcessor.distDir(this.options.outDir, this.manifest)
-
         // 保存到实例上
         this.inputs = inputs
-        console.log('---this.inputs:', inputs)
         return inputs
     }
     /**
@@ -294,7 +287,7 @@ export class ManifestProcessor {
      * @param {*} ssr
      * @returns
      */
-    transform (plugin, code = '', id, ssr) {
+    transform (plugin, code, id, ssr) {
         // 获取动态加载的资源
         const { code:updatedCode, imports, importCss } = this.backgroundProcessor.resolveDynamicImports(plugin, code, id)
         this.cache.dynamicImportContentScripts.push(...imports)
@@ -304,9 +297,6 @@ export class ManifestProcessor {
             [...new Set(importCss)].forEach(c => {
                 plugin.addWatchFile(c)
             })
-        }
-        if (id.indexOf('info') > -1) {
-            console.log('---------:code,id:', id, updatedCode)
         }
         return updatedCode
     }

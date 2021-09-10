@@ -98,7 +98,7 @@ module.exports = {
             after : true
         }],
         // 强制使用一致的换行风格
-        'linebreak-style': ['error', 'windows'],
+        'linebreak-style': 'error',
         // 要求构造函数首字母大写
         'new-cap'        : [2, {
             newIsCap: true,

@@ -1,6 +1,6 @@
 import get from 'lodash.get'
 import diff from 'lodash.difference'
-import { hasMagic, sync as globsync } from 'glob'
+import {hasMagic, sync as globsync} from 'glob'
 import { join } from 'path'
 import { isString } from '../../util/functions'
 /**
@@ -24,23 +24,23 @@ export const deriveFiles = (manifest, srcDir) => {
     // ]
     // 循环获取web_accessible_resources中的静态资源，在打包时作为多文件打包的入口之一
     const web_accessible_resources = get(manifest, 'web_accessible_resources', []).reduce(
-        (res_path, ress) => ress.resources.reduce(
-            (farr, f) => {
-                // f中存在magic变量（匹配符）
-                if (hasMagic(f)) {
-                    // 获取匹配的全部静态资源
-                    const files = globsync(f, { cwd: srcDir })
-                    return [...farr, ...files.map(x => x.replace(srcDir, ''))]
-                } else { // 如果没有匹配符，则把数组中文件路径全部获取
-                    return [...farr, f]
-                }
-            },
-            res_path
-        ),
+        (res_path, ress) => {
+            return ress.resources.reduce(
+                (farr, f) => {
+                    // f中存在magic变量（匹配符）
+                    if (hasMagic(f)) {
+                        // 获取匹配的全部静态资源
+                        const files = globsync(f, { cwd: srcDir })
+                        return [...farr, ...files.map(x => x.replace(srcDir, ''))]
+                    } else { // 如果没有匹配符，则把数组中文件路径全部获取
+                        return [...farr, f]
+                    }
+                },
+                res_path
+            )
+        },
         []
     )
-    // console.error('====:', web_accessible_resources)
-    // throw new Error('ssss')
     // js资源，来自web_accessible_resources(其中的js\ts\jsx\tsx文件)、backrgound、content-script(数组解析出来), 并且这些js资源需要打包为iife模式
     // content_scripts形式：
     // "content_scripts": [

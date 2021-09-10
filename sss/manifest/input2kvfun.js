@@ -14,7 +14,6 @@ export const input2kuFunction = srcDir => {
         // vite.config.js中input.name一般为输出目录的相对路径和文件名
         let name = relative(srcDir, file).split('.').slice(0, 1).join('.')
         // 如果那么已经出现过，抛出错误，name不能重复
-        console.log('0000:', name, '1111', inputkv)
         if (name in inputkv) {
             throw new Error(
                 `Script files with different extensions should not share names:\n\n"${file}"\nwill overwrite\n"${inputkv[name]}"`

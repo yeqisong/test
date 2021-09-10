@@ -19,7 +19,6 @@ export class HtmlProcessor {
                 if (item[1]) {
                     // 入口扁平后的文件名为原路径名用_连接
                     // set(manifest, item[0], join(outDir, slash1(item[1]).split('/').slice(-1)[0]))
-                    console.log('====html.js distdir:', item[1], normalize(slash1(item[1])), slash1(`.\\是ssd\\的sd.js`), normalize(slash1(`.\\是ssd\\的sd.js`)))
                     set(manifest, item[0], this._distName(normalize(slash1(item[1]))))
                 }
             }
