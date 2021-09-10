@@ -15,6 +15,7 @@ import { validateManifest } from '../manifest/validate'
 import { HtmlProcessor } from './html'
 import { canDo } from '../util/dir'
 import { uniqueId } from 'lodash'
+import { WebresProcessor } from './webres'
 // 同步读取manifest配置文件
 export const explorerSync = cosmiconfigSync('manifest', {
     cache: false
@@ -35,6 +36,7 @@ export class ManifestProcessor {
         // option.input.manifest路径(对象形式)删除manifest路径后剩余的配置
         inputObj                   : {},
         dynamicImportContentScripts: [],
+        injectScripts              : [],
         // dynamicImportContentCss    : [],
         permsHash                  : '',
         permissions                : [],
@@ -55,6 +57,7 @@ export class ManifestProcessor {
         this.permissionProcessor = new PermissionProcessor()
         this.backgroundProcessor = new BackgroundProcessor(options)
         this.htmlProcessor = new HtmlProcessor()
+        this.webresProcessor = new WebresProcessor()
     }
     /**
      * 根据vite.config配置加载manifest文件并解析
@@ -178,6 +181,7 @@ export class ManifestProcessor {
         //      'libs/popup': '/Users/yeqisong/Desktop/项目/chorme开发/pmwl/src/libs/popup.html',
         //      'libs/newtab': '/Users/yeqisong/Desktop/项目/chorme开发/pmwl/src/libs/newtab.html'
         // }
+        console.log('===this.options.srcDir:', this.options.srcDir, this.cache.inputObj)
         const inputs = this.cache.input.reduce(input2kuFunction(this.options.srcDir), this.cache.inputObj)
         // 修正核心入口文件位置(background)
         // {
@@ -194,10 +198,12 @@ export class ManifestProcessor {
         this.backgroundProcessor.distDir(inputs, this.manifest)
         // 修正核心入口文件位置(contentjs[])
         this.contentScriptProcessor.distDir(inputs, this.manifest)
+        this.webresProcessor.distDir(inputs, this.manifest, this.options.srcDir)
         // 记录html入口文件
         this.cache.html = html
         // 修正核心入口文件位置（html)
         this.htmlProcessor.distDir(this.options.outDir, this.manifest)
+
         // 保存到实例上
         this.inputs = inputs
         console.log('---this.inputs:', inputs)
@@ -264,6 +270,8 @@ export class ManifestProcessor {
         await this.contentScriptProcessor.generateBundleFromDynamicImports(plugin, bundle, this.cache.dynamicImportContentScripts)
         // 处理backround.js
         await this.backgroundProcessor.generateBundle(plugin, bundle, this.manifest)
+        // 处理web_res中js全部处理为iife(主要针对于inject.js)
+        await this.webresProcessor.generateBundle(plugin, bundle, this.manifest)
         // 生成manifest.json文件
         validateManifest(this.manifest)
         this._generateManifest(plugin, this.manifest)

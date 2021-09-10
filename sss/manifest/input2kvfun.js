@@ -1,4 +1,5 @@
 import { relative } from 'path'
+import { slash1 } from '../util/functions'
 /**
  * 将input数组中的文件转为key-value格式的函数
  * @param {*} srcDir 根目录
@@ -13,12 +14,13 @@ export const input2kuFunction = srcDir => {
         // vite.config.js中input.name一般为输出目录的相对路径和文件名
         let name = relative(srcDir, file).split('.').slice(0, 1).join('.')
         // 如果那么已经出现过，抛出错误，name不能重复
+        console.log('0000:', name, '1111', inputkv)
         if (name in inputkv) {
             throw new Error(
                 `Script files with different extensions should not share names:\n\n"${file}"\nwill overwrite\n"${inputkv[name]}"`
             )
         }
         // 返回当前file的kv到kv结果中
-        return { ...inputkv, [name]: file }
+        return { ...inputkv, [slash1(name)]: file }
     }
 }

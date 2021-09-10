@@ -75,7 +75,7 @@ export const crx3 =  options => {
             }
         },
         async generateBundle (options, bundle, isWrite) {
-            // console.log('----bundle:', bundle)
+            console.log('----g----bundle:', options)
             // 输出入口js（iife）
             await manifestProcessor.generateBundle(this, bundle)
         },
